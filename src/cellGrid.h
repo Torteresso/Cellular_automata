@@ -18,8 +18,6 @@ public:
 
 	CellGrid(sf::Vector2u windowSize) : m_windowSize {windowSize}, m_cellSize {static_cast<int>(windowSize.x/Col)}
 	{
-		assert(static_cast<int>(windowSize.x / Col) == static_cast<int>(windowSize.y / Row)
-			&& "The grid template parameters should match the window size");
 
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 		m_vertices.resize(6 * Row * Col);
@@ -33,13 +31,12 @@ public:
 
 				sf::Vertex* triangles = &m_vertices[(i + j * Row) * 6];
 
-
-				triangles[0].position = sf::Vector2f(i * m_cellSize, j * m_cellSize);
-				triangles[1].position = sf::Vector2f((i + 1) * m_cellSize, j * m_cellSize);
-				triangles[2].position = sf::Vector2f(i * m_cellSize, (j + 1) * m_cellSize);
-				triangles[3].position = sf::Vector2f(i * m_cellSize, (j + 1) * m_cellSize);
-				triangles[4].position = sf::Vector2f((i + 1) * m_cellSize, j * m_cellSize);
-				triangles[5].position = sf::Vector2f((i + 1) * m_cellSize, (j + 1) * m_cellSize);
+				triangles[0].position = sf::Vector2f(j * m_cellSize, i * m_cellSize);
+				triangles[1].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
+				triangles[2].position = sf::Vector2f(j * m_cellSize, (i + 1) * m_cellSize);
+				triangles[3].position = sf::Vector2f(j * m_cellSize, (i + 1) * m_cellSize);
+				triangles[4].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
+				triangles[5].position = sf::Vector2f((j + 1) * m_cellSize, (i + 1) * m_cellSize);
 
 				triangles[0].color = sf::Color::Green;
 				triangles[1].color = sf::Color::Green;
