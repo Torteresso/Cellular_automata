@@ -12,5 +12,5 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp "src/events.h" "src/events.cpp" "src/configuration.h" "src/cellGrid.h" "src/cell.h" "src/cell.cpp")
+add_executable(main src/main.cpp "src/events.h" "src/events.cpp" "src/configuration.h" "src/cellGrid.h" "src/cell.h" "src/cell.cpp" "src/random.h")
 target_link_libraries(main PRIVATE SFML::Graphics)

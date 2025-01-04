@@ -7,29 +7,34 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <cassert>
+#include <memory>
+#include "random.h"
 
-template <std::size_t Row, std::size_t Col>
 class CellGrid : public sf::Drawable, public sf::Transformable
 {
-	using Array2d = std::array<std::array<std::unique_ptr<Cell>, Col>, Row>;
+	using Vector2d = std::vector<std::vector<std::unique_ptr<Cell>>>;
 
 public:
 	CellGrid() = delete;
 
-	CellGrid(sf::Vector2u windowSize) : m_windowSize {windowSize}, m_cellSize {static_cast<int>(windowSize.x/Col)}
+	CellGrid(sf::Vector2u windowSize, int cellSize) 
+		: m_cellSize {cellSize}, 
+		  m_nbCol{static_cast<int>(windowSize.x/cellSize)}, 
+		  m_nbRow{static_cast<int>(windowSize.y/cellSize)}
 	{
-
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-		m_vertices.resize(6 * Row * Col);
-		for (int i{}; i < static_cast<int>(Row); i++)
+		m_vertices.resize(6 * m_nbRow * m_nbCol);
+
+		//m_grid.reserve(m_nbRow);
+		for (int i{}; i < m_nbRow; i++)
 		{
-			for (int j{}; j < static_cast<int>(Col); j++)
+			std::vector<std::unique_ptr<Cell>> row;
+			//row.reserve(m_nbCol);
+			for (int j{}; j < m_nbCol; j++)
 			{
-				m_grid[i][j] = generateCell(Cell::Type::dead);
+				row.emplace_back(std::move(generateCell(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)))));
 
-
-
-				sf::Vertex* triangles = &m_vertices[(i + j * Row) * 6];
+				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
 
 				triangles[0].position = sf::Vector2f(j * m_cellSize, i * m_cellSize);
 				triangles[1].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
@@ -38,23 +43,24 @@ public:
 				triangles[4].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
 				triangles[5].position = sf::Vector2f((j + 1) * m_cellSize, (i + 1) * m_cellSize);
 
-				triangles[0].color = sf::Color::Green;
-				triangles[1].color = sf::Color::Green;
-				triangles[2].color = sf::Color::Green;
-				triangles[3].color = sf::Color::Green;
-				triangles[4].color = sf::Color::Green;
+				triangles[0].color = row.back().get()->getColor();
+				triangles[1].color = row.back().get()->getColor();
+				triangles[2].color = row.back().get()->getColor();
+				triangles[3].color = row.back().get()->getColor();
+				triangles[4].color = row.back().get()->getColor();
+				triangles[5].color = row.back().get()->getColor();
 			}
+
+			m_grid.emplace_back(std::move(row));
 		}
 	}
 
 	void update()
 	{
-		for (int i{}; i < static_cast<int>(Row); i++)
+		for (int i{}; i < m_nbRow; i++)
 		{
-			for (int j{}; j < static_cast<int>(Col); j++)
+			for (int j{}; j < m_nbCol; j++)
 			{
-				
-				const Cell& currentCell{ m_grid[i][j] };
 
 			}
 		}
@@ -71,9 +77,10 @@ private:
         target.draw(m_vertices, states);
 	}
 
-	Array2d m_grid{};
+	Vector2d m_grid;
 
-	sf::Vector2u m_windowSize{};
+	int m_nbRow{};
+	int m_nbCol{};
 	int m_cellSize{};
 
 	sf::VertexArray m_vertices;

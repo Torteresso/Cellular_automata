@@ -9,7 +9,7 @@ namespace Config
 	sf::Vector2f const windowSizef{ static_cast<sf::Vector2f>(windowSize) };
 	int const maxFrameRate{ 144 };
 
-	int const cellSize{ 5 };
+	int const cellSize{ 10 };
 }
 
 #endif

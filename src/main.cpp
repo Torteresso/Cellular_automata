@@ -11,11 +11,7 @@ int main()
 
     window.setFramerateLimit(Config::maxFrameRate);
 
-    constexpr std::size_t row{ Config::windowSize.y / Config::cellSize };
-    constexpr std::size_t col{ Config::windowSize.x / Config::cellSize };
-
-    std::cout << row << ", " << col;
-    CellGrid<row, col> cellGrid(window.getSize());
+    CellGrid cellGrid(window.getSize(), Config::cellSize);
 
     while (window.isOpen())
     {
