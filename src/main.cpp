@@ -2,6 +2,7 @@
 #include <iostream>
 #include "events.h"
 #include "configuration.h"
+#include "cellGrid.h"
 
 int main()
 {
@@ -10,11 +11,18 @@ int main()
 
     window.setFramerateLimit(Config::maxFrameRate);
 
+    constexpr std::size_t row{ Config::windowSize.y / Config::cellSize };
+    constexpr std::size_t col{ Config::windowSize.x / Config::cellSize };
+    CellGrid<row, col> cellGrid(window.getSize());
+
     while (window.isOpen())
     {
         processEvents(window);
        
         window.clear();
+        
+        window.draw(cellGrid);
+
         window.display();
     }
 }
