@@ -22,9 +22,8 @@ int main()
        
         sf::Time elapsed = clock.restart();
 
-        float fps{ 1.0f / elapsed.asSeconds() };
-
-        std::cout << fps << "\n";
+        //float fps{ 1.0f / elapsed.asSeconds() };
+        //std::cout << fps << "\n";
 
         cellGrid.update(elapsed);
 

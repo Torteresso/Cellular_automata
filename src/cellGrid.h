@@ -8,11 +8,12 @@
 #include <memory>
 #include "random.h"
 #include <SFML/System/Vector2.hpp>
+#include <map>
 
 
 class CellGrid : public sf::Drawable, public sf::Transformable
 {
-	using Vector2d = std::vector<std::vector<std::unique_ptr<Cell>>>;
+	using Vector2d = std::vector<std::vector<Cell::Type>>;
 
 public:
 	CellGrid() = delete;
@@ -24,17 +25,24 @@ public:
 		  m_tBetweenUdpates {tBetweenUpdates},
 		  m_tRemaining {tBetweenUpdates}
 	{
+		m_cells.push_back(std::move(generateCell(Cell::Type::dead)));
+		m_cells.push_back(std::move(generateCell(Cell::Type::alive)));
+
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 		m_vertices.resize(6 * m_nbRow * m_nbCol);
 
-		//m_grid.reserve(m_nbRow);
+		m_grid.reserve(m_nbRow);
+		m_nextGrid.reserve(m_nbRow);
 		for (int i{}; i < m_nbRow; i++)
 		{
-			std::vector<std::unique_ptr<Cell>> row;
-			//row.reserve(m_nbCol);
+			std::vector<Cell::Type> row;
+			std::vector<Cell::Type> nextRow;
+			row.reserve(m_nbCol);
+			nextRow.reserve(m_nbCol);
 			for (int j{}; j < m_nbCol; j++)
 			{
-				row.emplace_back(std::move(generateCell(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)))));
+				row.emplace_back(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)));
+				nextRow.emplace_back(Cell::Type::dead);
 
 				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
 
@@ -45,7 +53,7 @@ public:
 				triangles[4].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
 				triangles[5].position = sf::Vector2f((j + 1) * m_cellSize, (i + 1) * m_cellSize);
 
-				sf::Color cellColor = row.back().get()->getColor();
+				sf::Color cellColor = m_cells[row.back()].get()->getColor();
 				triangles[0].color = cellColor;
 				triangles[1].color = cellColor;
 				triangles[2].color = cellColor;
@@ -54,7 +62,8 @@ public:
 				triangles[5].color = cellColor;
 			}
 
-			m_grid.emplace_back(std::move(row));
+			m_grid.emplace_back(row);
+			m_nextGrid.emplace_back(nextRow);
 		}
 	}
 
@@ -64,11 +73,11 @@ public:
 		{
 			for (int j{}; j < m_nbCol; j++)
 			{
-				m_grid[i][j].get()->generateNextType(m_grid, i, j);
+				m_nextGrid[i][j] = m_cells[m_grid[i][j]].get()->generateNextType(m_grid, i, j);
 			}
 		}
-
 	}
+
 	void instantUpdate()
 	{
 		update(m_tBetweenUdpates);
@@ -85,11 +94,11 @@ public:
 		{
 			for (int j{}; j < m_nbCol; j++)
 			{
-				m_grid[i][j] = generateCell(m_grid[i][j].get()->getNexType());
+				m_grid[i][j] = m_nextGrid[i][j];
 
 				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
 
-				sf::Color cellColor = m_grid[i][j].get()->getColor();
+				sf::Color cellColor = m_cells[m_grid[i][j]].get()->getColor();
 				triangles[0].color = cellColor;
 				triangles[1].color = cellColor;
 				triangles[2].color = cellColor;
@@ -112,7 +121,9 @@ private:
         target.draw(m_vertices, states);
 	}
 
+	std::vector<std::unique_ptr<Cell>> m_cells;
 	Vector2d m_grid;
+	Vector2d m_nextGrid;
 
 	int m_nbRow{};
 	int m_nbCol{};

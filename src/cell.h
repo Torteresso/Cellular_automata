@@ -9,9 +9,6 @@
 class Cell
 {
 public:
-
-	using Vector2d = std::vector<std::vector<std::unique_ptr<Cell>>>;
-
 	enum Type
 	{
 		dead,
@@ -19,17 +16,17 @@ public:
 		maxType,
 	};
 
-	Cell(Type t, sf::Color c) : m_type{ t }, m_nextType{ t }, m_color { c } {}
+	using Vector2d = std::vector<std::vector<Cell::Type>>;
+
+	Cell(Type t, sf::Color c) : m_type{ t }, m_color { c } {}
 
 	const Type& getType() const { return m_type; }
-	const Type& getNexType() const { return m_nextType; }
 	const sf::Color& getColor() const { return m_color; }
 
-	virtual void generateNextType(const Vector2d& grid, const int row, const int col) = 0;
+	virtual Type generateNextType(const Vector2d& grid, const int row, const int col) = 0;
 	
 protected:
 	Type m_type;
-	Type m_nextType;
 
 	sf::Color m_color;
 
@@ -54,7 +51,7 @@ class DeadCell : public Cell
 public:
 	DeadCell() : Cell(Type::dead, sf::Color::Black) {}
 
-	void generateNextType(const Vector2d& grid, const int row, const int col) override
+	Type generateNextType(const Vector2d& grid, const int row, const int col) override
 	{
 		int nbCloseAlive{};
 
@@ -66,7 +63,7 @@ public:
 				sf::Vector2i coord{ i, j };
 				transformCoordodinates(coord, grid);
 				
-				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y].get()->getType() == Type::dead) continue;
+				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y] == Type::dead) continue;
 
 				nbCloseAlive += 1;
 			}
@@ -74,11 +71,10 @@ public:
 
 		if (nbCloseAlive == 3)
 		{
-			m_nextType = Type::alive;
-			return;
+			return Type::alive;
 		}
 
-		m_nextType = Type::dead;
+		return Type::dead;
 	}
 
 private:
@@ -90,7 +86,7 @@ class AliveCell : public Cell
 public:
 	AliveCell() : Cell(Type::alive, sf::Color::White) {}
 
-	void generateNextType(const Vector2d& grid, const int row, const int col) override
+	Type generateNextType(const Vector2d& grid, const int row, const int col) override
 	{
 		int nbCloseAlive{};
 
@@ -102,7 +98,7 @@ public:
 				sf::Vector2i coord{ i, j };
 				transformCoordodinates(coord, grid);
 				
-				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y].get()->getType() == Type::dead) continue;
+				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y] == Type::dead) continue;
 
 				nbCloseAlive += 1;
 			}
@@ -110,11 +106,10 @@ public:
 
 		if (nbCloseAlive == 3 || nbCloseAlive == 2)
 		{
-			m_nextType = Type::alive;
-			return;
+			return Type::alive;
 		}
 
-		m_nextType = Type::dead;
+		return Type::dead;
 	}
 
 private:

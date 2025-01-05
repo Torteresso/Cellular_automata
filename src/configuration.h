@@ -10,7 +10,7 @@ namespace Config
 	int const maxFrameRate{ 60 };
 	sf::Time dt{sf::seconds(1.0f / static_cast<float>(maxFrameRate)) };
 
-	int const cellSize{ 5 };
+	int const cellSize{ 6 };
 }
 
 #endif
