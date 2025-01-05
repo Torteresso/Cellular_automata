@@ -10,13 +10,20 @@ int main()
                                    sf::Style::Default, sf::State::Fullscreen);
 
     window.setFramerateLimit(Config::maxFrameRate);
+    window.setKeyRepeatEnabled(false);
 
-    CellGrid cellGrid(window.getSize(), Config::cellSize);
+    CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt);
+    
+    sf::Clock clock;
 
     while (window.isOpen())
     {
-        processEvents(window);
+        processEvents(window, cellGrid);
        
+        sf::Time elapsed = clock.restart();
+
+        cellGrid.update(elapsed);
+
         window.clear();
         
         window.draw(cellGrid);

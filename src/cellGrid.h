@@ -3,12 +3,12 @@
 
 #include <array>
 #include "cell.h"
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics.hpp>
 #include <cassert>
 #include <memory>
 #include "random.h"
+#include <SFML/System/Vector2.hpp>
+
 
 class CellGrid : public sf::Drawable, public sf::Transformable
 {
@@ -17,10 +17,12 @@ class CellGrid : public sf::Drawable, public sf::Transformable
 public:
 	CellGrid() = delete;
 
-	CellGrid(sf::Vector2u windowSize, int cellSize) 
+	CellGrid(sf::Vector2u windowSize, int cellSize, sf::Time tBetweenUpdates) 
 		: m_cellSize {cellSize}, 
 		  m_nbCol{static_cast<int>(windowSize.x/cellSize)}, 
-		  m_nbRow{static_cast<int>(windowSize.y/cellSize)}
+		  m_nbRow{static_cast<int>(windowSize.y/cellSize)},
+		  m_tBetweenUdpates {tBetweenUpdates},
+		  m_tRemaining {tBetweenUpdates}
 	{
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 		m_vertices.resize(6 * m_nbRow * m_nbCol);
@@ -43,29 +45,62 @@ public:
 				triangles[4].position = sf::Vector2f((j + 1) * m_cellSize, i * m_cellSize);
 				triangles[5].position = sf::Vector2f((j + 1) * m_cellSize, (i + 1) * m_cellSize);
 
-				triangles[0].color = row.back().get()->getColor();
-				triangles[1].color = row.back().get()->getColor();
-				triangles[2].color = row.back().get()->getColor();
-				triangles[3].color = row.back().get()->getColor();
-				triangles[4].color = row.back().get()->getColor();
-				triangles[5].color = row.back().get()->getColor();
+				sf::Color cellColor = row.back().get()->getColor();
+				triangles[0].color = cellColor;
+				triangles[1].color = cellColor;
+				triangles[2].color = cellColor;
+				triangles[3].color = cellColor;
+				triangles[4].color = cellColor;
+				triangles[5].color = cellColor;
 			}
 
 			m_grid.emplace_back(std::move(row));
 		}
 	}
 
-	void update()
+	void prepareNextGrid()
 	{
 		for (int i{}; i < m_nbRow; i++)
 		{
 			for (int j{}; j < m_nbCol; j++)
 			{
+				m_grid[i][j].get()->generateNextType(m_grid, i, j);
+			}
+		}
 
+	}
+	void instantUpdate()
+	{
+		update(m_tBetweenUdpates);
+	}
+
+	void update(const sf::Time& elapsed)
+	{
+		m_tRemaining -= elapsed;
+		if (m_tRemaining > sf::Time::Zero) return;
+		m_tRemaining += m_tBetweenUdpates;
+
+		prepareNextGrid();
+		for (int i{}; i < m_nbRow; i++)
+		{
+			for (int j{}; j < m_nbCol; j++)
+			{
+				m_grid[i][j] = generateCell(m_grid[i][j].get()->getNexType());
+
+				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
+
+				sf::Color cellColor = m_grid[i][j].get()->getColor();
+				triangles[0].color = cellColor;
+				triangles[1].color = cellColor;
+				triangles[2].color = cellColor;
+				triangles[3].color = cellColor;
+				triangles[4].color = cellColor;
+				triangles[5].color = cellColor;
 			}
 		}
 	}
 
+	
 private:
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
@@ -84,6 +119,9 @@ private:
 	int m_cellSize{};
 
 	sf::VertexArray m_vertices;
+	
+	sf::Time m_tBetweenUdpates;
+	sf::Time m_tRemaining;
 	
 };
 
