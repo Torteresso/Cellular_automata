@@ -8,7 +8,6 @@
 #include <memory>
 #include "random.h"
 #include <SFML/System/Vector2.hpp>
-#include <map>
 
 
 class CellGrid : public sf::Drawable, public sf::Transformable
