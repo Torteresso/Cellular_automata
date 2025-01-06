@@ -18,7 +18,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable
 public:
 	CellGrid() = delete;
 
-	CellGrid(sf::Vector2u windowSize, int cellSize, sf::Time tBetweenUpdates) 
+	CellGrid(sf::Vector2u windowSize, int cellSize, sf::Time tBetweenUpdates, bool random=true) 
 		: m_cellSize {cellSize}, 
 		  m_nbCol{static_cast<int>(windowSize.x/cellSize)}, 
 		  m_nbRow{static_cast<int>(windowSize.y/cellSize)},
@@ -41,7 +41,15 @@ public:
 			nextRow.reserve(m_nbCol);
 			for (int j{}; j < m_nbCol; j++)
 			{
-				row.emplace_back(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)));
+				if (random)
+				{
+					row.emplace_back(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)));
+				}
+				else
+				{
+					row.emplace_back(Cell::Type::dead);
+				}
+
 				nextRow.emplace_back(Cell::Type::dead);
 
 				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
@@ -107,6 +115,24 @@ public:
 				triangles[5].color = cellColor;
 			}
 		}
+	}
+
+	void setCell(Cell::Type type, const sf::Vector2i& pos)
+	{
+		int i{ pos.y / m_cellSize };
+		int j{ pos.x / m_cellSize };
+
+		m_grid[i][j] = type;
+
+		sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
+
+		sf::Color cellColor = m_cells[m_grid[i][j]].get()->getColor();
+		triangles[0].color = cellColor;
+		triangles[1].color = cellColor;
+		triangles[2].color = cellColor;
+		triangles[3].color = cellColor;
+		triangles[4].color = cellColor;
+		triangles[5].color = cellColor;
 	}
 
 	

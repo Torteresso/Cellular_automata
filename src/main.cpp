@@ -4,15 +4,17 @@
 #include "configuration.h"
 #include "cellGrid.h"
 
+
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({Config::windowSize.x, Config::windowSize.y}), "CMake SFML Project", 
                                    sf::Style::Default, sf::State::Fullscreen);
 
     window.setFramerateLimit(Config::maxFrameRate);
-    window.setKeyRepeatEnabled(false);
+    //window.setKeyRepeatEnabled(false);
 
-    CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt);
+    //CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt);
+    CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt, false); //start with all dead cell
     
     sf::Clock clock;
 
