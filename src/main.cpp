@@ -13,8 +13,8 @@ int main()
     window.setFramerateLimit(Config::maxFrameRate);
     //window.setKeyRepeatEnabled(false);
 
-    CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt);
-    //CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt, false); //start with all dead cell
+    //CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt);
+    CellGrid cellGrid(window.getSize(), Config::cellSize, Config::dt, false); //start with all dead cell
     
     sf::Clock clock;
 
@@ -35,7 +35,7 @@ int main()
 
         std::cout << Utility::average(fpsVector) << "  -----------  " << fps << "\n";
 
-        cellGrid.update(elapsed);
+        //cellGrid.update(elapsed);
 
         window.clear();
         

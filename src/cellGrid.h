@@ -8,6 +8,7 @@
 #include <memory>
 #include "random.h"
 #include <SFML/System/Vector2.hpp>
+#include <iostream>
 
 
 class CellGrid : public sf::Drawable, public sf::Transformable
@@ -24,6 +25,7 @@ public:
 		  m_tBetweenUdpates {tBetweenUpdates},
 		  m_tRemaining {tBetweenUpdates}
 	{
+
 		m_cells.push_back(std::move(generateCell(Cell::Type::dead)));
 		m_cells.push_back(std::move(generateCell(Cell::Type::alive)));
 
