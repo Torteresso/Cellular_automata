@@ -22,7 +22,8 @@ namespace Random
 			static_cast<std::seed_seq::result_type>(std::chrono::steady_clock::now().time_since_epoch().count()),
 				rd(), rd(), rd(), rd(), rd(), rd(), rd() };
 
-		return std::mt19937{ ss };
+		//return std::mt19937{ ss };
+		return std::mt19937{ 5 };
 	}
 
 	// Here's our global std::mt19937 object.
