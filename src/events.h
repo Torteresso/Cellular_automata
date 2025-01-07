@@ -4,6 +4,14 @@
 #include <SFML/Window.hpp>
 #include "cellGrid.h"
 
-void processEvents(sf::Window& window, CellGrid& cellGrid);
+
+namespace Event
+{
+	void processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view);
+
+	void moveView(sf::RenderWindow& window, sf::View& view);
+
+	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View& view, float zoom);
+}
 
 #endif

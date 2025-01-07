@@ -25,7 +25,6 @@ public:
 		  m_tBetweenUdpates {tBetweenUpdates},
 		  m_tRemaining {tBetweenUpdates}
 	{
-
 		m_cells.push_back(std::move(generateCell(Cell::Type::dead)));
 		m_cells.push_back(std::move(generateCell(Cell::Type::alive)));
 
@@ -122,6 +121,8 @@ public:
 	{
 		int i{ pos.y / m_cellSize };
 		int j{ pos.x / m_cellSize };
+
+		if (i < 0 || i >= m_nbRow || j < 0 || j >= m_nbCol) return;
 
 		m_grid[i][j] = type;
 
