@@ -46,7 +46,7 @@ int main()
             std::cout << Utility::average(fpsVector) << "  -----------  " << fps << "\n";
         }
 
-        //cellGrid.update(elapsed);
+        cellGrid.update(elapsed);
 
         window.clear();
 

@@ -70,7 +70,7 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 void Event::moveView(sf::RenderWindow& window, sf::View& view)
 {
 	sf::Vector2f scroll = window.mapPixelToCoords(sf::Mouse::getPosition()) - view.getCenter();
-	const float velocity{ 0.01f };
+	const float velocity{ view.getSize().x / 800};
 	const float dissipation{ 0.2f };
 
 	const float halfWidth{ view.getSize().x / 2 };
@@ -92,7 +92,7 @@ void Event::moveView(sf::RenderWindow& window, sf::View& view)
 		if (scroll.y > 0) (scroll.y > halfHeight * portionTriger) ? scroll.y -= halfHeight * portionTriger : scroll.y = 0;
 		else (scroll.y < -halfHeight * portionTriger) ? scroll.y -= halfHeight * portionTriger : scroll.y = 0;
 
-		view.move({ signX *std::pow(std::abs(scroll.x), dissipation) , signY * std::pow(std::abs(scroll.y), dissipation)});
+		view.move({ signX *std::pow(std::abs(scroll.x), dissipation) * velocity , signY * std::pow(std::abs(scroll.y), dissipation) * velocity});
 	}
 }
 
