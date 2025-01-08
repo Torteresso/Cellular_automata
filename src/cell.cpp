@@ -8,6 +8,8 @@ std::unique_ptr<Cell> generateCell(Cell::Type t)
 		return std::make_unique<DeadCell>();
 	case Cell::Type::alive:
 		return std::make_unique<AliveCell>();
+	case Cell::Type::empty:
+		return std::make_unique<EmptyCell>();
 	default:
 		return nullptr;
 	}

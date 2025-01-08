@@ -3,15 +3,14 @@
 
 #include <SFML/Window.hpp>
 #include "cellGrid.h"
+#include "configuration.h"
 
 
 namespace Event
 {
-	void processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view);
+	void processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection);
 
 	void moveView(sf::RenderWindow& window, sf::View& view);
-
-	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View& view, float zoom);
 }
 
 #endif

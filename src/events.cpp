@@ -5,7 +5,7 @@
 bool g_mouseLeftDown{ false };
 bool g_mouseRightDown{ false };
 
-void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view)
+void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection)
 {
 	while (const std::optional event = window.pollEvent())
 	{
@@ -18,13 +18,21 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 			if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) window.close();
 
 			if (keyPressed->scancode == sf::Keyboard::Scancode::Space) cellGrid.instantUpdate();
+
+			if (keyPressed->scancode == sf::Keyboard::Scancode::R)
+			{
+				if (Config::startAsRandomGrid) cellGrid = CellGrid(window.getSize(), Config::cellSize, Config::dt);
+				else cellGrid = CellGrid(window.getSize(), Config::cellSize, Config::dt, false);
+
+				view = window.getDefaultView();
+			}
 		}
 		else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
 		{
 			if (mouseButtonPressed->button == sf::Mouse::Button::Left)
 			{
 				g_mouseLeftDown = true;
-				cellGrid.setCell(Cell::alive, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseButtonPressed->position)));
+				cellGrid.setCell(cellSelection, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseButtonPressed->position)));
 			}
 			else if (mouseButtonPressed->button == sf::Mouse::Button::Right)
 			{
@@ -45,7 +53,7 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>())
 		{
-			if (g_mouseLeftDown) cellGrid.setCell(Cell::alive, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseMoved->position)));
+			if (g_mouseLeftDown) cellGrid.setCell(cellSelection, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseMoved->position)));
 			else if (g_mouseRightDown) cellGrid.setCell(Cell::dead, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseMoved->position)));
 
 		}
@@ -95,15 +103,3 @@ void Event::moveView(sf::RenderWindow& window, sf::View& view)
 		view.move({ signX *std::pow(std::abs(scroll.x), dissipation) * velocity , signY * std::pow(std::abs(scroll.y), dissipation) * velocity});
 	}
 }
-
-void Event::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View& view, float zoom)
-{
-	const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
-	view.zoom(zoom);
-	window.setView(view);
-	const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
-	const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
-	view.move(offsetCoords);
-	window.setView(view);
-}
-

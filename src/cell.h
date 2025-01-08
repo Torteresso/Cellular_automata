@@ -13,6 +13,7 @@ public:
 	{
 		dead,
 		alive,
+		empty,
 		maxType,
 	};
 
@@ -63,9 +64,9 @@ public:
 				sf::Vector2i coord{ i, j };
 				transformCoordodinates(coord, grid);
 				
-				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y] == Type::dead) continue;
-
-				nbCloseAlive += 1;
+				if (coord.x == row && coord.y == col) continue;
+				
+				if (grid[coord.x][coord.y] == Type::alive) nbCloseAlive += 1;
 			}
 		}
 
@@ -98,9 +99,9 @@ public:
 				sf::Vector2i coord{ i, j };
 				transformCoordodinates(coord, grid);
 				
-				if ((coord.x == row && coord.y == col) || grid[coord.x][coord.y] == Type::dead) continue;
-
-				nbCloseAlive += 1;
+				if (coord.x == row && coord.y == col) continue;
+				
+				if (grid[coord.x][coord.y] == Type::alive) nbCloseAlive += 1;
 			}
 		}
 
@@ -115,4 +116,19 @@ public:
 private:
 
 };
+
+class EmptyCell : public Cell
+{
+public:
+	EmptyCell() : Cell(Type::empty, sf::Color {116, 109, 105}) {}
+
+	Type generateNextType(const Vector2d& grid, const int row, const int col) override
+	{
+		return Type::empty;
+	}
+
+private:
+
+};
+
 #endif

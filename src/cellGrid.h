@@ -27,6 +27,7 @@ public:
 	{
 		m_cells.push_back(std::move(generateCell(Cell::Type::dead)));
 		m_cells.push_back(std::move(generateCell(Cell::Type::alive)));
+		m_cells.push_back(std::move(generateCell(Cell::Type::empty)));
 
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 		m_vertices.resize(6 * m_nbRow * m_nbCol);
@@ -43,7 +44,14 @@ public:
 			{
 				if (random)
 				{
-					row.emplace_back(static_cast<Cell::Type>(Random::get(0, static_cast<int>(Cell::Type::maxType) - 1)));
+					const int r{ Random::get(0, 1000) };
+					Cell::Type t;
+
+					if (r <= 1) t = Cell::Type::empty;
+					else if (r <= 500) t = Cell::Type::alive;
+					else t = Cell::Type::dead;
+
+					row.emplace_back(t);
 				}
 				else
 				{
