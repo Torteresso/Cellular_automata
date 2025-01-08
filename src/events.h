@@ -8,7 +8,7 @@
 
 namespace Event
 {
-	void processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection);
+	void processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection, sf::CircleShape& cellSelectionCircle);
 
 	void moveView(sf::RenderWindow& window, sf::View& view);
 }

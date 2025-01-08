@@ -28,6 +28,7 @@ int main()
     Cell::Type cellSelection{ Cell::Type::alive };
 
     sf::View mainView = window.getDefaultView();
+    sf::View editorView = window.getDefaultView();
 
     if (Config::showFps)
     {
@@ -36,7 +37,7 @@ int main()
 
     while (window.isOpen())
     {
-        Event::processEvents(window, cellGrid, mainView, cellSelection);
+        Event::processEvents(window, cellGrid, mainView, cellSelection, cellSelectionCircle);
         Event::moveView(window, mainView);
 
         sf::Time elapsed = clock.restart();
@@ -58,7 +59,11 @@ int main()
 
         window.setView(mainView);
         window.draw(cellGrid);
+
+        window.setView(editorView);
         window.draw(cellSelectionCircle);
+
+        window.setView(mainView);
 
         window.display();
     }

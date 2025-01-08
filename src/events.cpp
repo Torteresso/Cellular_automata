@@ -3,9 +3,8 @@
 #include <cmath>
 
 bool g_mouseLeftDown{ false };
-bool g_mouseRightDown{ false };
 
-void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection)
+void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View& view, Cell::Type& cellSelection, sf::CircleShape& cellSelectionCircle)
 {
 	while (const std::optional event = window.pollEvent())
 	{
@@ -34,11 +33,6 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 				g_mouseLeftDown = true;
 				cellGrid.setCell(cellSelection, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseButtonPressed->position)));
 			}
-			else if (mouseButtonPressed->button == sf::Mouse::Button::Right)
-			{
-				g_mouseRightDown = true;
-				cellGrid.setCell(Cell::dead, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseButtonPressed->position)));
-			}
 		}
 		else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>())
 		{
@@ -48,13 +42,15 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 			}
 			else if (mouseButtonReleased->button == sf::Mouse::Button::Right)
 			{
-				g_mouseRightDown = false;
+				if (static_cast<int>(cellSelection) + 1 - static_cast<int>(Cell::Type::maxType) >= 0) cellSelection = static_cast<Cell::Type>(0);
+				else cellSelection = static_cast<Cell::Type>(static_cast<int>(cellSelection) + 1);
+
+				cellSelectionCircle.setFillColor(generateCell(cellSelection).get()->getColor());
 			}
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>())
 		{
 			if (g_mouseLeftDown) cellGrid.setCell(cellSelection, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseMoved->position)));
-			else if (g_mouseRightDown) cellGrid.setCell(Cell::dead, static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseMoved->position)));
 
 		}
 		else if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>())
@@ -84,7 +80,7 @@ void Event::moveView(sf::RenderWindow& window, sf::View& view)
 	const float halfWidth{ view.getSize().x / 2 };
 	const float halfHeight{ view.getSize().y / 2};
 
-	const float portionTriger{ 0.5 };
+	const float portionTriger{ 0.8 };
 
 	if (scroll.x * scroll.x > halfWidth * halfWidth * portionTriger * portionTriger
 		|| scroll.y * scroll.y > halfHeight * halfHeight * portionTriger * portionTriger)
