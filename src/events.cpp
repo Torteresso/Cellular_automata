@@ -45,7 +45,7 @@ void Event::processEvents(sf::RenderWindow& window, CellGrid& cellGrid, sf::View
 				if (static_cast<int>(cellSelection) + 1 - static_cast<int>(Cell::Type::maxType) >= 0) cellSelection = static_cast<Cell::Type>(0);
 				else cellSelection = static_cast<Cell::Type>(static_cast<int>(cellSelection) + 1);
 
-				cellSelectionCircle.setFillColor(generateCell(cellSelection).get()->getColor());
+				cellSelectionCircle.setFillColor(Cell(cellSelection).getColor());
 			}
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>())
