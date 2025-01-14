@@ -22,6 +22,7 @@ namespace Config
 	constexpr bool manualUpdateOnly{ false };
 	constexpr bool startAsRandomGrid{ true };
 
+
 }
 
 #endif
