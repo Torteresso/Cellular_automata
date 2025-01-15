@@ -80,7 +80,7 @@ void Event::moveView(sf::RenderWindow& window, sf::View& view)
 	const float halfWidth{ view.getSize().x / 2 };
 	const float halfHeight{ view.getSize().y / 2};
 
-	const float portionTriger{ 0.8 };
+	const float portionTriger{ 0.9 };
 
 	if (scroll.x * scroll.x > halfWidth * halfWidth * portionTriger * portionTriger
 		|| scroll.y * scroll.y > halfHeight * halfHeight * portionTriger * portionTriger)

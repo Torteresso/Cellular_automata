@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
+#include "random.h"
 
 class Cell
 {
@@ -21,102 +22,39 @@ public:
 
 	using Vector2d = std::vector<std::vector<Cell>>;
 
-	Cell(Type t) : m_type{ t }
+	Cell(Type t, sf::Vector2i target = {100, 100})
+		: m_type{ t }, m_target {target}
 	{
-		switch (t)
+		if (t == propagator && target == sf::Vector2i{ 100, 100 })
 		{
-		case dead:
-			m_color = sf::Color::Black;
-			break;
-		case alive:
-			m_color = sf::Color::White;
-			break;
-		case empty:
-			m_color = sf::Color{ 116, 109, 105 };
-			break;
-		case propagator:
-			m_color = sf::Color::Red;
-			break;
-		default:
-			m_color = sf::Color::Green;
-			break;
+			//m_target = { Random::get(0, 100), Random::get(0, 100) };
+			//std::cout << m_target.x << ", " << m_target.y << "\n";
 		}
+
+		setColorFromType(t);
 	}
 
 	const Type& getType() const { return m_type; }
 	const sf::Color& getColor() const { return m_color; }
 
-	Type generateNextType(const Vector2d& grid, const int row, const int col)
+	Cell generateNext(const Vector2d& grid, const int row, const int col)
 	{
-		int nbCloseAlive{};
-
 		switch (m_type)
 		{
 		case dead:
-
-
-			for (int i{ row - 1 }; i <= row + 1; i++)
-			{
-				for (int j{ col - 1 }; j <= col + 1; j++)
-				{
-
-					sf::Vector2i coord{ i, j };
-					transformCoordodinates(coord, grid);
-					
-					if (coord.x == row && coord.y == col) continue;
-					
-					if (grid[coord.x][coord.y].getType() == Type::alive) nbCloseAlive += 1;
-				}
-			}
-
-			if (nbCloseAlive == 3)
-			{
-				return Type::alive;
-			}
-
-			return Type::dead;
-
+			return generateFromDead(grid, row, col);
 		case alive:
-			for (int i{ row - 1 }; i <= row + 1; i++)
-			{
-				for (int j{ col - 1 }; j <= col + 1; j++)
-				{
-
-					sf::Vector2i coord{ i, j };
-					transformCoordodinates(coord, grid);
-					
-					if (coord.x == row && coord.y == col) continue;
-					
-					if (grid[coord.x][coord.y].getType() == Type::alive) nbCloseAlive += 1;
-				}
-			}
-
-			if (nbCloseAlive == 3 || nbCloseAlive == 2)
-			{
-				return Type::alive;
-			}
-
-			return Type::dead;
-
+			return generateFromAlive(grid, row, col);
 		case empty:
-
-			return Type::empty;
-
+			return generateFromEmpty(grid, row, col);
 		case propagator:
-
-			return Type::propagator;
-
+			return generateFromPropagator(grid, row, col);
 		default:
-
-			return Type::alive;
+			return Cell(dead);
 		}
 	}
 	
 private:
-	Type m_type;
-
-	sf::Color m_color;
-
 	static void transformCoordodinates(sf::Vector2i& v, const Vector2d& grid)
 	{
 		int nbRow{ static_cast<int>(grid.size()) };
@@ -127,6 +65,18 @@ private:
 		if (v.y < 0) v.y += nbCol;
 		if (v.y >= nbCol) v.y -= nbCol;
 	}
+
+	void setColorFromType(const Type& t);
+
+	Cell generateFromDead(const Vector2d& grid, const int row, const int col);
+	Cell generateFromAlive(const Vector2d& grid, const int row, const int col);
+	Cell generateFromEmpty(const Vector2d& grid, const int row, const int col);
+	Cell generateFromPropagator(const Vector2d& grid, const int row, const int col);
+
+
+	Type			m_type;
+	sf::Color		m_color;
+	sf::Vector2i	m_target;
 
 };
 

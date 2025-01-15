@@ -43,7 +43,7 @@ public:
 					const int r{ Random::get(0, 1000) };
 					Cell::Type t;
 
-					if (r <= 1) t = Cell::Type::empty;
+					if (r <= -1) t = Cell::Type::empty;
 					else if (r <= 500) t = Cell::Type::alive;
 					else t = Cell::Type::dead;
 
@@ -51,7 +51,7 @@ public:
 				}
 				else
 				{
-					row.emplace_back(Cell(Cell::Type::dead));
+					row.emplace_back(Cell(Cell::Type::empty));
 				}
 
 				nextRow.emplace_back(Cell(Cell::Type::dead));
@@ -85,7 +85,7 @@ public:
 		{
 			for (int j{}; j < m_nbCol; j++)
 			{
-				m_nextGrid[i][j] = Cell(m_grid[i][j].generateNextType(m_grid, i, j));
+				m_nextGrid[i][j] = m_grid[i][j].generateNext(m_grid, i, j);
 			}
 		}
 	}
@@ -111,6 +111,9 @@ public:
 				sf::Vertex* triangles = &m_vertices[(i + j * m_nbRow) * 6];
 
 				sf::Color cellColor = m_grid[i][j].getColor();
+
+				if (i == 100 && j == 100) cellColor = sf::Color::Green;
+
 				triangles[0].color = cellColor;
 				triangles[1].color = cellColor;
 				triangles[2].color = cellColor;
