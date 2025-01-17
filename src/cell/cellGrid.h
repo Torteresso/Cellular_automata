@@ -28,6 +28,8 @@ public:
 		m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 		m_vertices.resize(6 * m_nbRow * m_nbCol);
 
+		m_cellTextures.loadFromFile("res/cell.png");
+
 		m_grid.reserve(m_nbRow);
 		m_nextGrid.reserve(m_nbRow);
 		for (int i{}; i < m_nbRow; i++)
@@ -72,6 +74,13 @@ public:
 				triangles[3].color = cellColor;
 				triangles[4].color = cellColor;
 				triangles[5].color = cellColor;
+
+				triangles[0].texCoords = sf::Vector2f(0.f, 0.f);
+				triangles[1].texCoords = sf::Vector2f(32.f, 0.f);
+				triangles[2].texCoords = sf::Vector2f(0.f, 32.f);
+				triangles[3].texCoords = sf::Vector2f(0.f, 32.f);
+				triangles[4].texCoords = sf::Vector2f(32.f, 0.f);
+				triangles[5].texCoords = sf::Vector2f(32.f, 32.f);
 			}
 
 			m_grid.emplace_back(row);
@@ -151,7 +160,7 @@ private:
 	{
         states.transform *= getTransform();
 
-        states.texture = nullptr;
+        states.texture = &m_cellTextures;
 
         target.draw(m_vertices, states);
 	}
@@ -164,6 +173,8 @@ private:
 	int m_cellSize{};
 
 	sf::VertexArray m_vertices;
+	
+	sf::Texture m_cellTextures;
 	
 	sf::Time m_tBetweenUdpates;
 	sf::Time m_tRemaining;
