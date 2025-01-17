@@ -6,7 +6,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
-#include "random.h"
+#include "common/random.h"
 
 class Cell
 {

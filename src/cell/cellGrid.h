@@ -2,11 +2,11 @@
 #define CELL_GRID_H
 
 #include <array>
-#include "cell.h"
+#include "cell/cell.h"
 #include <SFML/Graphics.hpp>
 #include <cassert>
 #include <memory>
-#include "random.h"
+#include "common/random.h"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 

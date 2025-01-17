@@ -1,8 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "events.h"
-#include "cellGrid.h"
-#include "utility.h"
+#include "common/events.h"
+#include "cell/cellGrid.h"
+#include "common/utility.h"
+#include "configuration.h"
 
 int main()
 {

@@ -2,7 +2,7 @@
 #define EVENTS_H
 
 #include <SFML/Window.hpp>
-#include "cellGrid.h"
+#include "cell/cellGrid.h"
 #include "configuration.h"
 
 

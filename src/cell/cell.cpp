@@ -1,5 +1,5 @@
-#include "cell.h"
-#include "utility.h"
+#include "cell/cell.h"
+#include "common/utility.h"
 
 void Cell::setColorFromType(const Type& t)
 {
