@@ -9,7 +9,7 @@ void Cell::setColorFromType(const Type& t)
 		m_color = sf::Color::Black;
 		break;
 	case alive:
-		m_color = sf::Color::White;
+		m_color = sf::Color{ 195, 255, 255 };
 		break;
 	case empty:
 		m_color = sf::Color{ 116, 109, 105 };
@@ -44,7 +44,7 @@ Cell Cell::generateFromDead(const Vector2d& grid, const int row, const int col)
 
 	if (nbCloseAlive == 3)
 	{
-		return Cell(alive);
+		return Cell(alive, sf::Color{static_cast<uint8_t>(255 - 30 * nbCloseAlive), 255, 255});
 	}
 
 	return Cell(dead);
@@ -72,7 +72,7 @@ Cell Cell::generateFromAlive(const Vector2d& grid, const int row, const int col)
 
 	if (nbCloseAlive == 3 || nbCloseAlive == 2)
 	{
-		return Cell(alive);
+		return Cell(alive, sf::Color{static_cast<uint8_t>(255 - 30 * nbCloseAlive), 255, 255});
 	}
 
 	return Cell(dead);

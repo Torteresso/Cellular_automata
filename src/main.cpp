@@ -23,7 +23,7 @@ int main()
     sf::CircleShape cellSelectionCircle(Config::windowSize.x / 50);
     cellSelectionCircle.setPosition({ Config::windowSize.x / 100, Config::windowSize.y / 100 });
     cellSelectionCircle.setOutlineThickness(5.0f);
-    cellSelectionCircle.setOutlineColor(sf::Color::Red);
+    cellSelectionCircle.setOutlineColor(sf::Color::White);
 
     Cell::Type cellSelection{ Cell::Type::alive };
 

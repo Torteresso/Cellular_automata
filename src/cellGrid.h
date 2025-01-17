@@ -51,7 +51,7 @@ public:
 				}
 				else
 				{
-					row.emplace_back(Cell(Cell::Type::empty));
+					row.emplace_back(Cell(Cell::Type::dead));
 				}
 
 				nextRow.emplace_back(Cell(Cell::Type::dead));

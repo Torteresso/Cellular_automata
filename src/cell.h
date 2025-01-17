@@ -34,6 +34,9 @@ public:
 		setColorFromType(t);
 	}
 
+	Cell(Type t, sf::Color c) : m_type {t}, m_color {c} {}
+
+
 	const Type& getType() const { return m_type; }
 	const sf::Color& getColor() const { return m_color; }
 
