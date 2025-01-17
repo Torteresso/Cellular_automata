@@ -19,8 +19,8 @@ namespace Config
 	*/
 
 	constexpr bool showFps{ false };
-	constexpr bool manualUpdateOnly{ true };
-	constexpr bool startAsRandomGrid{ false };
+	constexpr bool manualUpdateOnly{ false };
+	constexpr bool startAsRandomGrid{ true };
 
 
 }
